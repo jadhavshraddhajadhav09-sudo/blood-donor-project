@@ -1,0 +1,126 @@
+{% extends 'base.html' %}
+
+{% block title %}About & Blood Guidelines - LifeBlood Registry{% endblock %}
+
+{% block content %}
+<div class="hero-section text-center py-5 mb-5">
+  <div class="container">
+    <h1 class="fw-bold mb-3">About LifeBlood Registry</h1>
+    <p class="lead max-width-700 mx-auto text-light">
+      A digital web application designed for rapid emergency blood donor lookup, eligibility validation, and emergency request management.
+    </p>
+  </div>
+</div>
+
+<div class="container py-4">
+  <!-- Mission & Overview -->
+  <div class="row g-4 mb-5 align-items-center">
+    <div class="col-lg-6">
+      <span class="badge bg-danger bg-opacity-10 text-danger border border-danger border-opacity-25 px-3 py-2 rounded-pill fw-semibold mb-3">
+        Project Purpose
+      </span>
+      <h2 class="fw-bold mb-3">Bridging the Gap Between Donors & Patients</h2>
+      <p class="text-secondary">
+        In medical emergencies, every minute lost in searching for compatible blood donors increases risk. LifeBlood Registry eliminates manual phone calls and delays by organizing voluntary donors by blood group, locality, and strict 90-day donation eligibility.
+      </p>
+      <ul class="list-unstyled text-secondary">
+        <li class="mb-2"><i class="bi bi-check-circle-fill text-danger me-2"></i> Instant local search filtered by exact or compatible blood types</li>
+        <li class="mb-2"><i class="bi bi-check-circle-fill text-danger me-2"></i> Automated 90-day cooling period validation to protect donor health</li>
+        <li class="mb-2"><i class="bi bi-check-circle-fill text-danger me-2"></i> Phone number masking & privacy protection</li>
+        <li class="mb-2"><i class="bi bi-check-circle-fill text-danger me-2"></i> Real-time matching for active hospital requests</li>
+      </ul>
+    </div>
+
+    <div class="col-lg-6">
+      <div class="p-4 rounded-4 bg-white shadow-sm border border-light">
+        <h4 class="fw-bold mb-3 text-dark"><i class="bi bi-info-square-fill text-danger me-2"></i> Eligibility Guidelines</h4>
+        
+        <div class="d-flex align-items-start gap-3 mb-3 p-3 bg-light rounded-3">
+          <span class="blood-badge"><i class="bi bi-calendar3"></i></span>
+          <div>
+            <h6 class="fw-bold mb-1">90-Day Donation Rule</h6>
+            <p class="small text-muted mb-0">
+              Male and female donors must allow a minimum of 90 days (3 months) between whole blood donations to ensure red blood cell replenishment.
+            </p>
+          </div>
+        </div>
+
+        <div class="d-flex align-items-start gap-3 mb-3 p-3 bg-light rounded-3">
+          <span class="blood-badge"><i class="bi bi-person-bounding-box"></i></span>
+          <div>
+            <h6 class="fw-bold mb-1">Age & Health Criteria</h6>
+            <p class="small text-muted mb-0">
+              Donors must be between 18 and 65 years of age, weigh at least 45 kg, and have a hemoglobin level above 12.5 g/dL.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Blood Compatibility Matrix -->
+  <div class="card border-0 rounded-4 shadow-sm p-4 bg-white mb-5" id="matrix">
+    <div class="text-center mb-4">
+      <span class="text-danger fw-bold text-uppercase small">Medical Compatibility Guide</span>
+      <h3 class="fw-bold mb-2">Blood Group Compatibility Chart</h3>
+      <p class="text-muted small max-width-600 mx-auto">
+        Refer to this chart when matching donor blood groups with recipient requirements in critical emergencies.
+      </p>
+    </div>
+
+    <div class="table-responsive">
+      <table class="table table-bordered align-middle text-center">
+        <thead class="table-danger">
+          <tr>
+            <th scope="col" class="py-3">Recipient Blood Group</th>
+            <th scope="col" class="py-3">Compatible Donor Blood Groups</th>
+            <th scope="col" class="py-3">Special Note</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="fw-bold text-danger fs-5">O-</td>
+            <td>O-</td>
+            <td><span class="badge bg-danger">Universal Donor</span> (Can donate to any blood type)</td>
+          </tr>
+          <tr>
+            <td class="fw-bold text-danger fs-5">O+</td>
+            <td>O+, O-</td>
+            <td>Most common blood group</td>
+          </tr>
+          <tr>
+            <td class="fw-bold text-danger fs-5">A-</td>
+            <td>A-, O-</td>
+            <td>Can receive from A- and O-</td>
+          </tr>
+          <tr>
+            <td class="fw-bold text-danger fs-5">A+</td>
+            <td>A+, A-, O+, O-</td>
+            <td>Can receive positive and negative A and O types</td>
+          </tr>
+          <tr>
+            <td class="fw-bold text-danger fs-5">B-</td>
+            <td>B-, O-</td>
+            <td>Can receive from B- and O-</td>
+          </tr>
+          <tr>
+            <td class="fw-bold text-danger fs-5">B+</td>
+            <td>B+, B-, O+, O-</td>
+            <td>Can receive positive and negative B and O types</td>
+          </tr>
+          <tr>
+            <td class="fw-bold text-danger fs-5">AB-</td>
+            <td>AB-, A-, B-, O-</td>
+            <td>Can receive from all Rh-negative blood groups</td>
+          </tr>
+          <tr>
+            <td class="fw-bold text-danger fs-5">AB+</td>
+            <td>AB+, AB-, A+, A-, B+, B-, O+, O-</td>
+            <td><span class="badge bg-success">Universal Recipient</span> (Can receive from all types)</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock %}

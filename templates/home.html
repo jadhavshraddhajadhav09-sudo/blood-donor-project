@@ -1,0 +1,239 @@
+{% extends 'base.html' %}
+
+{% block title %}Home - LifeBlood Community Registry{% endblock %}
+
+{% block content %}
+<!-- Hero Banner -->
+<section class="hero-section text-center text-lg-start">
+  <div class="container position-relative z-1">
+    <div class="row align-items-center g-5">
+      <div class="col-lg-7">
+        <span class="badge bg-danger bg-opacity-25 text-danger border border-danger border-opacity-50 px-3 py-2 rounded-pill fw-semibold mb-3">
+          <i class="bi bi-heart-pulse-fill me-1"></i> Community Emergency Blood Response Network
+        </span>
+        <h1 class="hero-title mb-3">
+          Every Drop Saved Is A <span class="text-danger">Life Given.</span>
+        </h1>
+        <p class="hero-subtitle mb-4">
+          Connect directly with voluntary, eligible blood donors in your city. Quick registration, real-time emergency matching, and zero delays when seconds count.
+        </p>
+
+        <div class="d-flex flex-wrap gap-3 justify-content-center justify-content-lg-start mb-4">
+          <a href="{{ url_for('donor.register') }}" class="btn btn-theme-red btn-lg">
+            <i class="bi bi-person-plus-fill me-2"></i> Become a Donor
+          </a>
+          <a href="{{ url_for('request.create_request') }}" class="btn btn-outline-light btn-lg rounded-pill px-4">
+            <i class="bi bi-exclamation-triangle-fill me-2 text-danger"></i> Request Blood
+          </a>
+        </div>
+      </div>
+
+      <!-- Quick Search Widget Card -->
+      <div class="col-lg-5">
+        <div class="card border-0 rounded-4 shadow-lg p-4 bg-white text-dark">
+          <div class="d-flex align-items-center gap-2 mb-3">
+            <span class="blood-badge"><i class="bi bi-search"></i></span>
+            <div>
+              <h5 class="fw-bold mb-0">Find Donors Instantly</h5>
+              <small class="text-muted">Search verified blood donors nearby</small>
+            </div>
+          </div>
+
+          <form action="{{ url_for('donor.find_donors') }}" method="GET">
+            <div class="mb-3">
+              <label class="form-label small fw-semibold text-secondary">Blood Group Needed</label>
+              <select name="blood_group" class="form-select">
+                <option value="">-- Select Blood Group --</option>
+                {% for bg in blood_groups %}
+                  <option value="{{ bg }}">{{ bg }}</option>
+                {% endfor %}
+              </select>
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label small fw-semibold text-secondary">City / Location</label>
+              <input type="text" name="city" class="form-control" placeholder="e.g. Mumbai, Delhi, Bangalore">
+            </div>
+
+            <div class="form-check mb-3">
+              <input class="form-check-input" type="checkbox" name="availability" value="available" id="checkAvailableHome" checked>
+              <label class="form-check-input-label small text-muted" for="checkAvailableHome">
+                Show available & eligible donors only
+              </label>
+            </div>
+
+            <button type="submit" class="btn btn-theme-red w-100 py-2.5">
+              <i class="bi bi-search me-1"></i> Search Blood Donors
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Impact Statistics Section -->
+<section class="py-5 bg-white">
+  <div class="container">
+    <div class="row g-4">
+      <div class="col-md-3 col-6">
+        <div class="stat-card text-center">
+          <div class="stat-icon mx-auto mb-3">
+            <i class="bi bi-people-fill"></i>
+          </div>
+          <div class="stat-number">{{ total_donors }}</div>
+          <div class="stat-label">Registered Donors</div>
+        </div>
+      </div>
+
+      <div class="col-md-3 col-6">
+        <div class="stat-card text-center">
+          <div class="stat-icon mx-auto mb-3 text-success bg-success bg-opacity-10">
+            <i class="bi bi-check-circle-fill"></i>
+          </div>
+          <div class="stat-number text-success">{{ eligible_donors_count }}</div>
+          <div class="stat-label">Ready & Eligible</div>
+        </div>
+      </div>
+
+      <div class="col-md-3 col-6">
+        <div class="stat-card text-center">
+          <div class="stat-icon mx-auto mb-3 text-danger bg-danger bg-opacity-10">
+            <i class="bi bi-exclamation-circle-fill"></i>
+          </div>
+          <div class="stat-number text-danger">{{ active_requests_count }}</div>
+          <div class="stat-label">Active Emergency Requests</div>
+        </div>
+      </div>
+
+      <div class="col-md-3 col-6">
+        <div class="stat-card text-center">
+          <div class="stat-icon mx-auto mb-3 text-primary bg-primary bg-opacity-10">
+            <i class="bi bi-heart-fill"></i>
+          </div>
+          <div class="stat-number text-primary">{{ fulfilled_requests_count }}</div>
+          <div class="stat-label">Requests Fulfilled</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Featured Active Emergency Requests -->
+{% if featured_requests %}
+<section class="py-5 bg-light">
+  <div class="container">
+    <div class="d-flex justify-content-between align-items-end mb-4">
+      <div>
+        <span class="badge bg-danger text-white mb-2"><i class="bi bi-alarm-fill me-1"></i> URGENT REQUIREMENT</span>
+        <h2 class="fw-bold mb-0">Active Blood Emergency Requests</h2>
+      </div>
+      <a href="{{ url_for('request.active_requests') }}" class="btn btn-outline-theme btn-sm">
+        View All Requests <i class="bi bi-arrow-right ms-1"></i>
+      </a>
+    </div>
+
+    <div class="row g-4">
+      {% for req in featured_requests %}
+      <div class="col-lg-4 col-md-6">
+        <div class="card h-100 border-0 shadow-sm rounded-4 p-4 bg-white position-relative">
+          <div class="d-flex justify-content-between align-items-start mb-3">
+            <span class="blood-badge blood-badge-lg">{{ req.blood_group }}</span>
+            <span class="badge {% if req.urgency == 'Critical' %}badge-urgency-critical{% elif req.urgency == 'Urgent' %}badge-urgency-urgent{% else %}badge-urgency-normal{% endif %} px-3 py-2 rounded-pill">
+              {{ req.urgency }}
+            </span>
+          </div>
+
+          <h5 class="fw-bold mb-1">{{ req.patient_name }}</h5>
+          <p class="text-secondary small mb-2">
+            <i class="bi bi-building-hospital text-danger me-1"></i> {{ req.hospital_name }}, {{ req.city }}
+          </p>
+          
+          <div class="d-flex justify-content-between text-muted small my-2 py-2 border-top border-bottom">
+            <span><i class="bi bi-droplet-fill text-danger me-1"></i> Units: <strong>{{ req.units_required }}</strong></span>
+            <span><i class="bi bi-calendar-event me-1"></i> By: <strong>{{ req.required_by_date.strftime('%b %d, %Y') }}</strong></span>
+          </div>
+
+          <p class="small text-muted mb-3 flex-grow-1">
+            {{ req.notes | truncate(90) if req.notes else 'Immediate blood donation needed.' }}
+          </p>
+
+          <div class="d-flex gap-2">
+            <button type="button" class="btn btn-sm btn-outline-danger flex-grow-1 rounded-pill" data-bs-toggle="modal" data-bs-target="#matchingDonorsModal" data-request-id="{{ req.id }}" data-patient-name="{{ req.patient_name }}" data-blood-group="{{ req.blood_group }}">
+              <i class="bi bi-people-fill me-1"></i> Matching Donors
+            </button>
+            <a href="tel:{{ req.contact_phone }}" class="btn btn-sm btn-success rounded-pill px-3">
+              <i class="bi bi-telephone-fill"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endif %}
+
+<!-- Key Features / Guidelines -->
+<section class="py-5 bg-white">
+  <div class="container py-4">
+    <div class="text-center max-width-700 mx-auto mb-5">
+      <span class="text-danger fw-bold text-uppercase tracking-wider small">How It Works</span>
+      <h2 class="fw-bold">Simple, Fast & Life-Saving System</h2>
+    </div>
+
+    <div class="row g-4">
+      <div class="col-md-4 text-center">
+        <div class="p-4 rounded-4 bg-light h-100 border border-light">
+          <div class="stat-icon mx-auto mb-3 text-danger bg-danger bg-opacity-10">
+            <i class="bi bi-journal-plus fs-3"></i>
+          </div>
+          <h5 class="fw-bold">1. Register as a Donor</h5>
+          <p class="text-muted small">
+            Fill out the simple 1-minute registration form. Enter your blood group, age, location and availability status.
+          </p>
+        </div>
+      </div>
+
+      <div class="col-md-4 text-center">
+        <div class="p-4 rounded-4 bg-light h-100 border border-light">
+          <div class="stat-icon mx-auto mb-3 text-warning bg-warning bg-opacity-10">
+            <i class="bi bi-shield-check fs-3"></i>
+          </div>
+          <h5 class="fw-bold">2. 90-Day Eligibility Check</h5>
+          <p class="text-muted small">
+            Our automated system validates that 90 days have passed since your last donation to safeguard your personal health.
+          </p>
+        </div>
+      </div>
+
+      <div class="col-md-4 text-center">
+        <div class="p-4 rounded-4 bg-light h-100 border border-light">
+          <div class="stat-icon mx-auto mb-3 text-success bg-success bg-opacity-10">
+            <i class="bi bi-telephone-outbound fs-3"></i>
+          </div>
+          <h5 class="fw-bold">3. Direct Contact in Emergencies</h5>
+          <p class="text-muted small">
+            Requesters search for matching donors in their city and connect via direct call with full privacy protection.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Matching Donors Modal Container -->
+<div class="modal fade" id="matchingDonorsModal" tabindex="-1" aria-labelledby="matchingDonorsModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+    <div class="modal-content rounded-4 border-0 shadow">
+      <div class="modal-header border-0 bg-danger text-white rounded-top-4">
+        <h5 class="modal-title fw-bold" id="modalPatientTitle">Matching Donors</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body p-4" id="matchingDonorsList">
+        <!-- Loaded dynamically via JavaScript -->
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

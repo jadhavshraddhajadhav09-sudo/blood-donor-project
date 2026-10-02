@@ -1,0 +1,102 @@
+{% extends 'base.html' %}
+
+{% block title %}Edit Donor #{{ donor.id }} - Admin Portal{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-lg-8">
+      <div class="form-card">
+        <div class="d-flex justify-content-between align-items-center mb-4 border-bottom pb-3">
+          <div class="d-flex align-items-center gap-3">
+            <span class="blood-badge blood-badge-lg">{{ donor.blood_group }}</span>
+            <div>
+              <h3 class="fw-bold mb-0">Edit Donor Profile</h3>
+              <p class="text-muted mb-0">Donor ID #{{ donor.id }} — Registered on {{ donor.created_at.strftime('%Y-%m-%d') }}</p>
+            </div>
+          </div>
+          <a href="{{ url_for('admin.dashboard') }}" class="btn btn-outline-secondary btn-sm">
+            <i class="bi bi-arrow-left me-1"></i> Back to Dashboard
+          </a>
+        </div>
+
+        <form action="{{ url_for('admin.edit_donor', donor_id=donor.id) }}" method="POST">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+          <div class="row g-3 mb-3">
+            <div class="col-md-6">
+              <label class="form-label">Full Name</label>
+              <input type="text" name="full_name" class="form-control" value="{{ donor.full_name }}" required>
+            </div>
+            <div class="col-md-3">
+              <label class="form-label">Age</label>
+              <input type="number" name="age" class="form-control" value="{{ donor.age }}" min="18" max="65" required>
+            </div>
+            <div class="col-md-3">
+              <label class="form-label">Gender</label>
+              <select name="gender" class="form-select" required>
+                <option value="Male" {% if donor.gender == 'Male' %}selected{% endif %}>Male</option>
+                <option value="Female" {% if donor.gender == 'Female' %}selected{% endif %}>Female</option>
+                <option value="Other" {% if donor.gender == 'Other' %}selected{% endif %}>Other</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="row g-3 mb-3">
+            <div class="col-md-6">
+              <label class="form-label">Phone Number (10 Digits)</label>
+              <input type="tel" name="phone_number" class="form-control" value="{{ donor.phone_number }}" pattern="\d{10}" maxlength="10" required>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Email Address</label>
+              <input type="email" name="email" class="form-control" value="{{ donor.email }}" required>
+            </div>
+          </div>
+
+          <div class="row g-3 mb-3">
+            <div class="col-md-4">
+              <label class="form-label">Blood Group</label>
+              <select name="blood_group" class="form-select fw-bold" required>
+                {% for bg in blood_groups %}
+                  <option value="{{ bg }}" {% if donor.blood_group == bg %}selected{% endif %}>{{ bg }}</option>
+                {% endfor %}
+              </select>
+            </div>
+            <div class="col-md-4">
+              <label class="form-label">City</label>
+              <input type="text" name="city" class="form-control" value="{{ donor.city }}" required>
+            </div>
+            <div class="col-md-4">
+              <label class="form-label">Area / Locality</label>
+              <input type="text" name="area" class="form-control" value="{{ donor.area }}" required>
+            </div>
+          </div>
+
+          <div class="row g-3 mb-4">
+            <div class="col-md-6">
+              <label class="form-label">Last Blood Donation Date</label>
+              <input type="date" name="last_donation_date" class="form-control" value="{{ donor.last_donation_date.strftime('%Y-%m-%d') if donor.last_donation_date else '' }}">
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Availability Status</label>
+              <div class="form-check form-switch mt-2">
+                <input class="form-check-input" type="checkbox" name="is_available" value="true" id="edit_is_available" {% if donor.is_available %}checked{% endif %}>
+                <label class="form-check-label fw-semibold" for="edit_is_available">Available for Emergency Calls</label>
+              </div>
+            </div>
+          </div>
+
+          <input type="hidden" name="consent_given" value="true">
+
+          <div class="d-flex gap-2">
+            <button type="submit" class="btn btn-primary px-4">
+              <i class="bi bi-check-circle me-1"></i> Save Changes
+            </button>
+            <a href="{{ url_for('admin.dashboard') }}" class="btn btn-outline-secondary px-4">Cancel</a>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

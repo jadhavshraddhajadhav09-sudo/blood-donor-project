@@ -1,0 +1,111 @@
+{% extends 'base.html' %}
+
+{% block title %}Post Emergency Blood Request - LifeBlood Registry{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-lg-8">
+      <div class="form-card border-top border-4 border-danger">
+        <div class="d-flex align-items-center gap-3 mb-4 border-bottom pb-3">
+          <span class="blood-badge blood-badge-lg bg-danger"><i class="bi bi-exclamation-triangle-fill"></i></span>
+          <div>
+            <h2 class="fw-bold mb-0 text-danger">Emergency Blood Request</h2>
+            <p class="text-muted mb-0">Post a blood requirement to connect with matching voluntary donors</p>
+          </div>
+        </div>
+
+        <form action="{{ url_for('request.create_request') }}" method="POST" id="requestForm">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+          <div class="row g-3 mb-3">
+            <!-- Patient Name -->
+            <div class="col-md-6">
+              <label for="patient_name" class="form-label">Patient Name <span class="text-danger">*</span></label>
+              <input type="text" class="form-control" id="patient_name" name="patient_name" value="{{ form_data.get('patient_name', '') }}" required placeholder="e.g. Suresh Chandra">
+            </div>
+
+            <!-- Blood Group Needed -->
+            <div class="col-md-3">
+              <label for="blood_group" class="form-label">Blood Group Needed <span class="text-danger">*</span></label>
+              <select class="form-select border-danger fw-bold" id="blood_group" name="blood_group" required>
+                <option value="">Select...</option>
+                {% for bg in blood_groups %}
+                  <option value="{{ bg }}" {% if form_data.get('blood_group') == bg %}selected{% endif %}>{{ bg }}</option>
+                {% endfor %}
+              </select>
+            </div>
+
+            <!-- Units Required -->
+            <div class="col-md-3">
+              <label for="units_required" class="form-label">Units (Bags) Required <span class="text-danger">*</span></label>
+              <input type="number" class="form-control" id="units_required" name="units_required" min="1" max="20" value="{{ form_data.get('units_required', '1') }}" required>
+            </div>
+          </div>
+
+          <div class="row g-3 mb-3">
+            <!-- Hospital Name -->
+            <div class="col-md-8">
+              <label for="hospital_name" class="form-label">Hospital Name & Address <span class="text-danger">*</span></label>
+              <input type="text" class="form-control" id="hospital_name" name="hospital_name" value="{{ form_data.get('hospital_name', '') }}" required placeholder="e.g. Lilavati Hospital, Bandra West">
+            </div>
+
+            <!-- City -->
+            <div class="col-md-4">
+              <label for="city" class="form-label">City <span class="text-danger">*</span></label>
+              <input type="text" class="form-control" id="city" name="city" value="{{ form_data.get('city', '') }}" required placeholder="e.g. Mumbai">
+            </div>
+          </div>
+
+          <div class="row g-3 mb-3">
+            <!-- Contact Person -->
+            <div class="col-md-6">
+              <label for="contact_person" class="form-label">Contact Person Name <span class="text-danger">*</span></label>
+              <input type="text" class="form-control" id="contact_person" name="contact_person" value="{{ form_data.get('contact_person', '') }}" required placeholder="Attendant / Relative Name">
+            </div>
+
+            <!-- Contact Phone -->
+            <div class="col-md-6">
+              <label for="contact_phone" class="form-label">Contact Phone (10 Digits) <span class="text-danger">*</span></label>
+              <div class="input-group">
+                <span class="input-group-text bg-light fw-bold">+91</span>
+                <input type="tel" class="form-control" id="contact_phone" name="contact_phone" pattern="\d{10}" maxlength="10" value="{{ form_data.get('contact_phone', '') }}" required placeholder="10 digit phone number">
+              </div>
+            </div>
+          </div>
+
+          <div class="row g-3 mb-3">
+            <!-- Urgency Level -->
+            <div class="col-md-6">
+              <label for="urgency" class="form-label">Urgency Level <span class="text-danger">*</span></label>
+              <select class="form-select fw-semibold" id="urgency" name="urgency" required>
+                <option value="Critical" {% if form_data.get('urgency') == 'Critical' %}selected{% endif %}>🔴 Critical (Immediate / Surgery / ICU)</option>
+                <option value="Urgent" {% if form_data.get('urgency') == 'Urgent' %}selected{% endif %}>🟠 Urgent (Within 24 Hours)</option>
+                <option value="Normal" {% if form_data.get('urgency') == 'Normal' or not form_data.get('urgency') %}selected{% endif %}>🔵 Normal (Scheduled procedure)</option>
+              </select>
+            </div>
+
+            <!-- Required By Date -->
+            <div class="col-md-6">
+              <label for="required_by_date" class="form-label">Required-By Date <span class="text-danger">*</span></label>
+              <input type="date" class="form-control" id="required_by_date" name="required_by_date" value="{{ form_data.get('required_by_date', '') }}" required>
+            </div>
+          </div>
+
+          <!-- Notes -->
+          <div class="mb-4">
+            <label for="notes" class="form-label">Additional Instructions / Case Notes</label>
+            <textarea class="form-control" id="notes" name="notes" rows="3" placeholder="Provide any details such as room number, doctor name, or specific instructions for donors.">{{ form_data.get('notes', '') }}</textarea>
+          </div>
+
+          <div class="d-grid">
+            <button type="submit" class="btn btn-theme-red btn-lg py-3 fw-bold">
+              <i class="bi bi-broadcast me-2"></i> Submit Emergency Request
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

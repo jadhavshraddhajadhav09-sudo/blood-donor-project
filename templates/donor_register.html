@@ -1,0 +1,141 @@
+{% extends 'base.html' %}
+
+{% block title %}Register as Blood Donor - LifeBlood Registry{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-lg-8">
+      <div class="form-card">
+        <div class="d-flex align-items-center gap-3 mb-4 border-bottom pb-3">
+          <span class="blood-badge blood-badge-lg"><i class="bi bi-person-fill-add"></i></span>
+          <div>
+            <h2 class="fw-bold mb-0">Register as a Blood Donor</h2>
+            <p class="text-muted mb-0">Join our network of life-saving voluntary blood donors</p>
+          </div>
+        </div>
+
+        <form action="{{ url_for('donor.register') }}" method="POST" id="donorRegisterForm" class="needs-validation">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+          <div class="row g-3 mb-3">
+            <!-- Full Name -->
+            <div class="col-md-6">
+              <label for="full_name" class="form-label">Full Name <span class="text-danger">*</span></label>
+              <input type="text" class="form-control" id="full_name" name="full_name" value="{{ form_data.get('full_name', '') }}" required placeholder="e.g. Rahul Sharma">
+            </div>
+
+            <!-- Age (18-65) -->
+            <div class="col-md-3">
+              <label for="age" class="form-label">Age (18-65) <span class="text-danger">*</span></label>
+              <input type="number" class="form-control" id="age" name="age" min="18" max="65" value="{{ form_data.get('age', '') }}" required placeholder="e.g. 25">
+              <div class="form-text text-muted">Must be 18 to 65 years.</div>
+            </div>
+
+            <!-- Gender -->
+            <div class="col-md-3">
+              <label for="gender" class="form-label">Gender <span class="text-danger">*</span></label>
+              <select class="form-select" id="gender" name="gender" required>
+                <option value="">Select...</option>
+                <option value="Male" {% if form_data.get('gender') == 'Male' %}selected{% endif %}>Male</option>
+                <option value="Female" {% if form_data.get('gender') == 'Female' %}selected{% endif %}>Female</option>
+                <option value="Other" {% if form_data.get('gender') == 'Other' %}selected{% endif %}>Other</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="row g-3 mb-3">
+            <!-- Phone Number -->
+            <div class="col-md-6">
+              <label for="phone_number" class="form-label">Phone Number (10 Digits) <span class="text-danger">*</span></label>
+              <div class="input-group">
+                <span class="input-group-text bg-light fw-bold">+91</span>
+                <input type="tel" class="form-control" id="phone_number" name="phone_number" pattern="\d{10}" maxlength="10" value="{{ form_data.get('phone_number', '') }}" required placeholder="10 digit phone number">
+              </div>
+              <div class="form-text text-muted">Used strictly for emergency blood contact.</div>
+            </div>
+
+            <!-- Email -->
+            <div class="col-md-6">
+              <label for="email" class="form-label">Email Address <span class="text-danger">*</span></label>
+              <input type="email" class="form-control" id="email" name="email" value="{{ form_data.get('email', '') }}" required placeholder="name@example.com">
+            </div>
+          </div>
+
+          <div class="row g-3 mb-3">
+            <!-- Blood Group -->
+            <div class="col-md-4">
+              <label for="blood_group" class="form-label">Blood Group <span class="text-danger">*</span></label>
+              <select class="form-select border-danger fw-bold" id="blood_group" name="blood_group" required>
+                <option value="">Select Group...</option>
+                {% for bg in blood_groups %}
+                  <option value="{{ bg }}" {% if form_data.get('blood_group') == bg %}selected{% endif %}>{{ bg }}</option>
+                {% endfor %}
+              </select>
+            </div>
+
+            <!-- City -->
+            <div class="col-md-4">
+              <label for="city" class="form-label">City <span class="text-danger">*</span></label>
+              <input type="text" class="form-control" id="city" name="city" value="{{ form_data.get('city', '') }}" required placeholder="e.g. Mumbai">
+            </div>
+
+            <!-- Area / Locality -->
+            <div class="col-md-4">
+              <label for="area" class="form-label">Area / Locality <span class="text-danger">*</span></label>
+              <input type="text" class="form-control" id="area" name="area" value="{{ form_data.get('area', '') }}" required placeholder="e.g. Andheri West">
+            </div>
+          </div>
+
+          <div class="row g-3 mb-4">
+            <!-- Last Donation Date -->
+            <div class="col-md-6">
+              <label for="last_donation_date" class="form-label">Last Blood Donation Date</label>
+              <input type="date" class="form-control" id="last_donation_date" name="last_donation_date" value="{{ form_data.get('last_donation_date', '') }}">
+              <div class="form-text text-muted">Leave empty if you are a first-time donor. Eligibility requires 90 days between donations.</div>
+            </div>
+
+            <!-- Availability Toggle -->
+            <div class="col-md-6">
+              <label class="form-label">Current Availability Status</label>
+              <div class="form-check form-switch mt-2">
+                <input class="form-check-input" type="checkbox" id="is_available" name="is_available" value="true" checked>
+                <label class="form-check-label fw-semibold text-success" for="is_available">
+                  Available for Emergency Blood Calls
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <!-- Privacy Note -->
+          <div class="privacy-callout mb-4">
+            <div class="d-flex align-items-top">
+              <i class="bi bi-shield-check fs-4 me-2"></i>
+              <div>
+                <strong>Donor Privacy & Confidentiality Guarantee:</strong>
+                <p class="mb-0 small">
+                  Your phone number will be masked in search results and is shared strictly for verified emergency blood donation requests. Your data will never be sold or used for marketing.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Consent Checkbox -->
+          <div class="form-check mb-4">
+            <input class="form-check-input" type="checkbox" id="consent_given" name="consent_given" value="true" required checked>
+            <label class="form-check-label small" for="consent_given">
+              I consent to share my blood group and location with people requesting emergency blood donations and confirm that all details provided above are accurate. <span class="text-danger">*</span>
+            </label>
+          </div>
+
+          <div class="d-grid gap-2">
+            <button type="submit" class="btn btn-theme-red btn-lg py-3 fw-bold">
+              <i class="bi bi-heart-fill me-2"></i> Complete Donor Registration
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

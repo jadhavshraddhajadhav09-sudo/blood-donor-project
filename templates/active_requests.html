@@ -1,0 +1,165 @@
+{% extends 'base.html' %}
+
+{% block title %}Active Blood Requests - LifeBlood Registry{% endblock %}
+
+{% block content %}
+<div class="bg-white border-bottom py-4">
+  <div class="container">
+    <div class="row align-items-center">
+      <div class="col-md-6">
+        <h2 class="fw-bold text-dark mb-1"><i class="bi bi-card-checklist text-danger me-2"></i> Emergency Blood Requests</h2>
+        <p class="text-muted mb-0">Browse current emergency blood requirements and find compatible donors</p>
+      </div>
+      <div class="col-md-6 text-md-end mt-3 mt-md-0">
+        <a href="{{ url_for('request.create_request') }}" class="btn btn-theme-red btn-sm">
+          <i class="bi bi-plus-circle-fill me-1"></i> Post Emergency Request
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="container py-5">
+  <!-- Filters Card -->
+  <div class="card border-0 rounded-4 shadow-sm p-4 bg-white mb-5">
+    <form action="{{ url_for('request.active_requests') }}" method="GET" class="row g-3 align-items-end">
+      <!-- Status Filter -->
+      <div class="col-md-3">
+        <label for="status" class="form-label small fw-bold text-secondary">Request Status</label>
+        <select name="status" id="status" class="form-select">
+          <option value="Active" {% if selected_status == 'Active' %}selected{% endif %}>Active Requests Only</option>
+          <option value="Fulfilled" {% if selected_status == 'Fulfilled' %}selected{% endif %}>Fulfilled Requests</option>
+        </select>
+      </div>
+
+      <!-- Blood Group Filter -->
+      <div class="col-md-4">
+        <label for="blood_group" class="form-label small fw-bold text-secondary">Blood Group Needed</label>
+        <select name="blood_group" id="blood_group" class="form-select border-danger">
+          <option value="">All Blood Groups</option>
+          {% for bg in blood_groups %}
+            <option value="{{ bg }}" {% if selected_bg == bg %}selected{% endif %}>{{ bg }}</option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <!-- City Filter -->
+      <div class="col-md-3">
+        <label for="city" class="form-label small fw-bold text-secondary">City</label>
+        <input type="text" name="city" id="city" class="form-control" placeholder="Search city..." value="{{ selected_city }}">
+      </div>
+
+      <!-- Submit Filter Button -->
+      <div class="col-md-2 d-grid">
+        <button type="submit" class="btn btn-theme-red">
+          <i class="bi bi-funnel-fill me-1"></i> Filter
+        </button>
+      </div>
+    </form>
+  </div>
+
+  <!-- Requests Grid -->
+  {% if requests %}
+    <div class="row g-4">
+      {% for req in requests %}
+      <div class="col-lg-6">
+        <div class="card h-100 border-0 shadow-sm rounded-4 p-4 bg-white position-relative border-start border-4 {% if req.urgency == 'Critical' %}border-danger{% elif req.urgency == 'Urgent' %}border-warning{% else %}border-info{% endif %}">
+          <div class="d-flex justify-content-between align-items-start mb-3">
+            <div class="d-flex align-items-center gap-3">
+              <span class="blood-badge blood-badge-lg">{{ req.blood_group }}</span>
+              <div>
+                <h5 class="fw-bold mb-0 text-dark">{{ req.patient_name }}</h5>
+                <span class="small text-muted">Posted: {{ req.created_at.strftime('%b %d, %Y at %H:%M') }}</span>
+              </div>
+            </div>
+            <div>
+              <span class="badge {% if req.urgency == 'Critical' %}badge-urgency-critical{% elif req.urgency == 'Urgent' %}badge-urgency-urgent{% else %}badge-urgency-normal{% endif %} px-3 py-2 rounded-pill mb-1 d-block text-center">
+                {{ req.urgency }}
+              </span>
+              {% if req.status == 'Fulfilled' %}
+                <span class="badge bg-success text-white w-100"><i class="bi bi-check-circle me-1"></i> Fulfilled</span>
+              {% endif %}
+            </div>
+          </div>
+
+          <div class="row g-2 p-3 bg-light rounded-3 mb-3 small">
+            <div class="col-sm-6">
+              <span class="text-muted d-block">Hospital:</span>
+              <strong class="text-dark"><i class="bi bi-building-hospital text-danger me-1"></i> {{ req.hospital_name }}</strong>
+            </div>
+            <div class="col-sm-6">
+              <span class="text-muted d-block">City:</span>
+              <strong class="text-dark"><i class="bi bi-geo-alt-fill text-danger me-1"></i> {{ req.city }}</strong>
+            </div>
+            <div class="col-sm-6 mt-2">
+              <span class="text-muted d-block">Units Required:</span>
+              <strong class="text-danger"><i class="bi bi-droplet-fill me-1"></i> {{ req.units_required }} Bag(s)</strong>
+            </div>
+            <div class="col-sm-6 mt-2">
+              <span class="text-muted d-block">Required By:</span>
+              <strong class="text-dark"><i class="bi bi-calendar-event me-1"></i> {{ req.required_by_date.strftime('%b %d, %Y') }}</strong>
+            </div>
+          </div>
+
+          {% if req.notes %}
+            <div class="mb-3 p-2 border-start border-2 border-secondary bg-white rounded small text-secondary">
+              <strong>Note:</strong> {{ req.notes }}
+            </div>
+          {% endif %}
+
+          <div class="d-flex justify-content-between align-items-center pt-3 border-top mt-auto">
+            <div>
+              <small class="text-muted d-block">Contact Person:</small>
+              <strong class="text-dark">{{ req.contact_person }}</strong>
+            </div>
+            
+            <div class="d-flex gap-2">
+              {% if req.status == 'Active' %}
+                <button type="button" class="btn btn-sm btn-outline-danger rounded-pill" data-bs-toggle="modal" data-bs-target="#matchingDonorsModal" data-request-id="{{ req.id }}" data-patient-name="{{ req.patient_name }}" data-blood-group="{{ req.blood_group }}">
+                  <i class="bi bi-people-fill me-1"></i> View Donors
+                </button>
+                <form action="{{ url_for('request.fulfill_request', request_id=req.id) }}" method="POST" class="d-inline" onsubmit="return confirm('Mark this request as Fulfilled?');">
+                  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                  <button type="submit" class="btn btn-sm btn-outline-success rounded-pill">
+                    <i class="bi bi-check-lg"></i> Fulfilled
+                  </button>
+                </form>
+              {% endif %}
+              <a href="tel:{{ req.contact_phone }}" class="btn btn-sm btn-success rounded-pill px-3">
+                <i class="bi bi-telephone-fill me-1"></i> Call
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <div class="text-center py-5 bg-white rounded-4 shadow-sm">
+      <div class="stat-icon mx-auto mb-3 text-secondary bg-light" style="width:70px; height:70px; font-size:2rem;">
+        <i class="bi bi-inbox"></i>
+      </div>
+      <h4 class="fw-bold">No Emergency Requests Found</h4>
+      <p class="text-muted max-width-500 mx-auto mb-4">
+        There are currently no blood requests matching your filters.
+      </p>
+      <a href="{{ url_for('request.create_request') }}" class="btn btn-theme-red btn-sm">Post an Emergency Request</a>
+    </div>
+  {% endif %}
+</div>
+
+<!-- Matching Donors Modal -->
+<div class="modal fade" id="matchingDonorsModal" tabindex="-1" aria-labelledby="matchingDonorsModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+    <div class="modal-content rounded-4 border-0 shadow">
+      <div class="modal-header border-0 bg-danger text-white rounded-top-4">
+        <h5 class="modal-title fw-bold" id="modalPatientTitle">Matching Donors</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body p-4" id="matchingDonorsList">
+        <!-- JS dynamic content -->
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

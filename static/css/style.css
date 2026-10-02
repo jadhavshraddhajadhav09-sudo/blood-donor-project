@@ -1,0 +1,322 @@
+/* Custom Styles for Blood Donor Registry & Emergency Request System */
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Inter:wght@400;500;600&display=swap');
+
+:root {
+  --primary-red: #dc3545;
+  --primary-dark: #b02a37;
+  --primary-gradient: linear-gradient(135deg, #e63946 0%, #a81c24 100%);
+  --accent-red-light: #ffe5e7;
+  --dark-text: #1e293b;
+  --muted-text: #64748b;
+  --bg-light: #f8fafc;
+  --card-shadow: 0 10px 25px -5px rgba(220, 53, 69, 0.08), 0 8px 10px -6px rgba(0, 0, 0, 0.04);
+  --card-shadow-hover: 0 20px 30px -10px rgba(220, 53, 69, 0.18), 0 10px 15px -5px rgba(0, 0, 0, 0.06);
+  --glass-bg: rgba(255, 255, 255, 0.92);
+  --border-radius-lg: 16px;
+  --border-radius-md: 12px;
+}
+
+body {
+  font-family: 'Outfit', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  background-color: var(--bg-light);
+  color: var(--dark-text);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow-x: hidden;
+}
+
+main {
+  flex: 1;
+}
+
+/* Navbar */
+.navbar-brand {
+  font-weight: 800;
+  font-size: 1.4rem;
+  color: var(--primary-red) !important;
+  letter-spacing: -0.5px;
+}
+
+.brand-icon {
+  width: 32px;
+  height: 32px;
+  filter: drop-shadow(0 2px 4px rgba(220, 53, 69, 0.3));
+  transition: transform 0.3s ease;
+}
+
+.navbar-brand:hover .brand-icon {
+  transform: scale(1.15) rotate(-5deg);
+}
+
+.nav-link {
+  font-weight: 500;
+  color: #334155 !important;
+  padding: 0.5rem 1rem !important;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+}
+
+.nav-link:hover, .nav-link.active {
+  color: var(--primary-red) !important;
+  background-color: var(--accent-red-light);
+}
+
+.btn-theme-red {
+  background: var(--primary-gradient);
+  color: #fff !important;
+  border: none;
+  font-weight: 600;
+  padding: 0.6rem 1.4rem;
+  border-radius: 30px;
+  box-shadow: 0 4px 14px rgba(220, 53, 69, 0.35);
+  transition: all 0.3s ease;
+}
+
+.btn-theme-red:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(220, 53, 69, 0.5);
+  color: #fff;
+}
+
+.btn-outline-theme {
+  border: 2px solid var(--primary-red);
+  color: var(--primary-red);
+  font-weight: 600;
+  border-radius: 30px;
+  padding: 0.55rem 1.3rem;
+  transition: all 0.3s ease;
+}
+
+.btn-outline-theme:hover {
+  background-color: var(--primary-red);
+  color: #fff;
+  transform: translateY(-2px);
+}
+
+/* Hero Section */
+.hero-section {
+  background: linear-gradient(135deg, #111827 0%, #1e293b 50%, #8b0000 100%);
+  color: white;
+  padding: 5rem 0 6rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.hero-section::before {
+  content: '';
+  position: absolute;
+  top: -20%;
+  right: -10%;
+  width: 500px;
+  height: 500px;
+  background: radial-gradient(circle, rgba(220,53,69,0.3) 0%, rgba(0,0,0,0) 70%);
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.hero-title {
+  font-size: 3.2rem;
+  font-weight: 800;
+  line-height: 1.15;
+  letter-spacing: -1px;
+}
+
+.hero-subtitle {
+  font-size: 1.2rem;
+  color: #cbd5e1;
+  font-weight: 400;
+}
+
+/* Stat Cards */
+.stat-card {
+  background: #ffffff;
+  border-radius: var(--border-radius-lg);
+  padding: 1.8rem;
+  box-shadow: var(--card-shadow);
+  border: 1px solid rgba(220, 53, 69, 0.08);
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.stat-card:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--card-shadow-hover);
+}
+
+.stat-card .stat-icon {
+  width: 54px;
+  height: 54px;
+  border-radius: 14px;
+  background: var(--accent-red-light);
+  color: var(--primary-red);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+}
+
+.stat-card .stat-number {
+  font-size: 2.2rem;
+  font-weight: 800;
+  color: var(--dark-text);
+  line-height: 1.2;
+}
+
+.stat-card .stat-label {
+  font-size: 0.95rem;
+  color: var(--muted-text);
+  font-weight: 500;
+}
+
+/* Blood Drop Pill Badge */
+.blood-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--primary-gradient);
+  color: white;
+  font-weight: 800;
+  font-size: 1rem;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  box-shadow: 0 4px 10px rgba(220, 53, 69, 0.3);
+}
+
+.blood-badge-lg {
+  width: 56px;
+  height: 56px;
+  font-size: 1.3rem;
+}
+
+/* Donor Cards */
+.donor-card {
+  background: #ffffff;
+  border-radius: var(--border-radius-lg);
+  border: 1px solid #e2e8f0;
+  padding: 1.5rem;
+  box-shadow: var(--card-shadow);
+  transition: all 0.3s ease;
+}
+
+.donor-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--card-shadow-hover);
+  border-color: rgba(220, 53, 69, 0.2);
+}
+
+.badge-eligible {
+  background-color: #d1fae5;
+  color: #065f46;
+  font-weight: 600;
+  padding: 0.4rem 0.8rem;
+  border-radius: 20px;
+}
+
+.badge-cooling {
+  background-color: #fef3c7;
+  color: #92400e;
+  font-weight: 600;
+  padding: 0.4rem 0.8rem;
+  border-radius: 20px;
+}
+
+.badge-urgency-critical {
+  background-color: #fee2e2;
+  color: #991b1b;
+  font-weight: 700;
+  animation: pulse-border 2s infinite;
+}
+
+.badge-urgency-urgent {
+  background-color: #ffedd5;
+  color: #9a3412;
+  font-weight: 700;
+}
+
+.badge-urgency-normal {
+  background-color: #e0f2fe;
+  color: #075985;
+  font-weight: 600;
+}
+
+@keyframes pulse-border {
+  0% { box-shadow: 0 0 0 0 rgba(220, 53, 69, 0.4); }
+  70% { box-shadow: 0 0 0 10px rgba(220, 53, 69, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(220, 53, 69, 0); }
+}
+
+/* Forms */
+.form-card {
+  background: #ffffff;
+  border-radius: var(--border-radius-lg);
+  box-shadow: var(--card-shadow);
+  padding: 2.5rem;
+  border: 1px solid #e2e8f0;
+}
+
+.form-label {
+  font-weight: 600;
+  color: #334155;
+  margin-bottom: 0.4rem;
+}
+
+.form-control, .form-select {
+  border-radius: 10px;
+  padding: 0.75rem 1rem;
+  border: 1.5px solid #cbd5e1;
+  font-size: 0.95rem;
+  transition: all 0.2s ease;
+}
+
+.form-control:focus, .form-select:focus {
+  border-color: var(--primary-red);
+  box-shadow: 0 0 0 0.25rem rgba(220, 53, 69, 0.15);
+}
+
+/* Footer */
+footer {
+  background-color: #0f172a;
+  color: #94a3b8;
+  padding: 4rem 0 2rem;
+  margin-top: auto;
+}
+
+footer h5 {
+  color: #f8fafc;
+  font-weight: 700;
+  margin-bottom: 1.2rem;
+}
+
+footer a {
+  color: #cbd5e1;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+footer a:hover {
+  color: #f87171;
+}
+
+/* Pulse animation for logo */
+.pulse-drop {
+  animation: pulse-animation 2.5s infinite ease-in-out;
+}
+
+@keyframes pulse-animation {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.08); }
+  100% { transform: scale(1); }
+}
+
+/* Privacy Callout */
+.privacy-callout {
+  background: #fff5f5;
+  border-left: 4px solid var(--primary-red);
+  padding: 1rem 1.2rem;
+  border-radius: 0 8px 8px 0;
+  font-size: 0.9rem;
+  color: #7f1d1d;
+}
